@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codelab: Introducción a GitHub Copilot</title>
+    <style>
+        :root {
+            --primary-color: #2f2f2f;
+            --secondary-color: #6e40c9;
+            --accent-color: #3fb950;
+            --light-color: #f6f8fa;
+            --border-color: #e1e4e8;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --copilot-blue: #1f6feb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--copilot-blue));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .copilot-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background-color: var(--light-color);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .step {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step:hover {
+            background-color: #e8eaed;
+        }
+        
+        .step.active {
+            background-color: var(--copilot-blue);
+            color: white;
+        }
+        
+        .step.completed {
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .step-content {
+            display: none;
+        }
+        
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-header {
+            background-color: #2d2d2d;
+            padding: 0.5rem 1rem;
+            margin: -1rem -1rem 1rem -1rem;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .code-language {
+            color: var(--accent-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: #5a32a3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-next {
+            float: right;
+        }
+        
+        .btn-prev {
+            float: left;
+            background-color: #6c757d;
+        }
+        
+        .btn-prev:hover {
+            background-color: #5a6268;
+        }
+        
+        .navigation {
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--copilot-blue));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .checkmark {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            margin-right: 10px;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .step.active .step-number {
+            background-color: white;
+            color: var(--copilot-blue);
+        }
+        
+        .step.completed .step-number {
+            background-color: var(--accent-color);
+        }
+        
+        .interactive-element {
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+        
+        .demo-area {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            background-color: var(--light-color);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .demo-content {
+            padding: 1rem;
+            min-height: 200px;
+            background-color: #f8f9fa;
+        }
+        
+        .code-editor {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            font-family: 'Courier New', monospace;
+            padding: 1rem;
+            min-height: 200px;
+            border-radius: 0 0 6px 6px;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.5;
+        }
+        
+        .code-comment {
+            color: #6a9955;
+        }
+        
+        .code-suggestion {
+            color: #9cdcfe;
+            opacity: 0.7;
+        }
+        
+        .tip-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid var(--copilot-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .pricing-table {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .pricing-card {
+            flex: 1;
+            min-width: 250px;
+            margin: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .pricing-header {
+            background-color: var(--copilot-blue);
+            color: white;
+            padding: 1rem;
+        }
+        
+        .pricing-body {
+            padding: 1.5rem;
+        }
+        
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .pricing-table {
+                flex-direction: column;
+            }
+        }
+        
+        .copilot-demo {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        
+        .suggestion-cue {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: var(--copilot-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="copilot-icon">🤖</div>
+            <h1>Codelab: Introducción a GitHub Copilot</h1>
+            <p>Tu compañero de programación con IA</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h2>Pasos del Tutorial</h2>
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                ¿Qué es GitHub Copilot?
+            </div>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                Configurar GitHub Copilot
+            </div>
+            <div class="step" data-step="3">
+                <span class="step-number">3</span>
+                Primeros pasos con Copilot
+            </div>
+            <div class="step" data-step="4">
+                <span class="step-number">4</span>
+                Mejores prácticas
+            </div>
+            <div class="step" data-step="5">
+                <span class="step-number">5</span>
+                Casos de uso avanzados
+            </div>
+            <div class="step" data-step="6">
+                <span class="step-number">6</span>
+                Precios y alternativas
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="step-content active" id="step-1">
+                <h2>¿Qué es GitHub Copilot?</h2>
+                <p>GitHub Copilot es un programador de pares con IA que te ayuda a escribir código más rápido y con menos trabajo. Funciona como una extensión en tu editor de código y sugiere líneas y funciones completas en tiempo real.</p>
+                
+                <h3>¿Cómo funciona?</h3>
+                <ul>
+                    <li><strong>Asistente de código</strong>: Sugiere código mientras escribes</li>
+                    <li><strong>Basado en contexto</strong>: Analiza tu código y comentarios</li>
+                    <li><strong>Multi-lenguaje</strong>: Soporta docenas de lenguajes de programación</li>
+                    <li><strong>Aprendizaje continuo</strong>: Se mejora constantemente con nuevo código</li>
+                </ul>
+                
+                <div class="interactive-element">
+                    <h3>Demostración rápida</h3>
+                    <p>Observa cómo Copilot puede ayudarte a completar código:</p>
+                    
+                    <div class="copilot-demo">
+                        <div class="code-editor">
+<span class="code-comment"># Escribe una función que calcule el factorial de un número</span>
+<span class="code-comment"># Comienza a escribir "def factorial" y Copilot sugerirá el resto</span>
+
+def factorial(n):
+    <span class="code-suggestion">if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)</span>
+                        </div>
+                        <div class="suggestion-cue">Sugerencia de Copilot</div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 ¿Sabías que?</strong> GitHub Copilot está entrenado con miles de millones de líneas de código público y puede sugerir soluciones completas basadas en patrones que ha aprendido.
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-2">
+                <h2>Configurar GitHub Copilot</h2>
+                <p>Configurar GitHub Copilot es sencillo. Solo necesitas una suscripción y instalar la extensión en tu editor.</p>
+                
+                <h3>Requisitos</h3>
+                <ul>
+                    <li>Cuenta de GitHub</li>
+                    <li>Suscripción a GitHub Copilot (gratuita para estudiantes)</li>
+                    <li>Editor de código compatible (VS Code, JetBrains, Neovim)</li>
+                </ul>
+                
+                <h3>Pasos de instalación</h3>
+                <ol>
+                    <li>Visita <a href="https://github.com/features/copilot" target="_blank">github.com/features/copilot</a></li>
+                    <li>Haz clic en "Start free trial"</li>
+                    <li>En tu editor, instala la extensión GitHub Copilot</li>
+                    <li>Inicia sesión con tu cuenta de GitHub</li>
+                    <li>¡Comienza a usar Copilot!</li>
+                </ol>
+                
+                <div class="interactive-element">
+                    <h3>Simulación de configuración</h3>
+                    <div class="form-group">
+                        <label for="github-username">Tu nombre de usuario de GitHub:</label>
+                        <input type="text" id="github-username" placeholder="tu-usuario">
+                    </div>
+                    <div class="form-group">
+                        <label for="editor">Selecciona tu editor:</label>
+                        <select id="editor">
+                            <option value="vscode">Visual Studio Code</option>
+                            <option value="jetbrains">JetBrains (IntelliJ, PyCharm, etc.)</option>
+                            <option value="neovim">Neovim</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="simulateSetup()">Configurar Copilot</button>
+                    <div class="success-message" id="setup-success">
+                        ¡GitHub Copilot configurado correctamente! Ahora puedes comenzar a usarlo en tu editor.
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-3">
+                <h2>Primeros pasos con Copilot</h2>
+                <p>Una vez instalado, GitHub Copilot comenzará a sugerir código automáticamente. Aquí te mostramos cómo interactuar con él:</p>
+                
+                <h3>Flujo de trabajo básico</h3>
+                <ol>
+                    <li>Escribe un comentario describiendo lo que quieres hacer</li>
+                    <li>Comienza a escribir código y observa las sugerencias</li>
+                    <li>Presiona Tab para aceptar una sugerencia</li>
+                    <li>Usa las flechas para navegar entre sugerencias alternativas</li>
+                </ol>
+                
+                <div class="demo-area">
+                    <div class="demo-header">
+                        <span>Ejemplo práctico: Crear una función de Fibonacci</span>
+                    </div>
+                    <div class="code-editor">
+<span class="code-comment"># Escribe un comentario descriptivo</span>
+<span class="code-comment"># Función para generar la secuencia de Fibonacci</span>
+
+def fibonacci(n):
+    <span class="code-suggestion">if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    else:
+        sequence = [0, 1]
+        for i in range(2, n):
+            sequence.append(sequence[i-1] + sequence[i-2])
+        return sequence</span>
+                    </div>
+                </div>
+                
+                <h3>Comandos útiles</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Comandos de GitHub Copilot</span>
+                    </div>
+                    Tab - Aceptar sugerencia<br>
+                    Ctrl + → - Siguiente sugerencia<br>
+                    Ctrl + ← - Sugerencia anterior<br>
+                    Ctrl + Enter - Ver todas las sugerencias<br>
+                    Esc - Descartar sugerencia
+                </div>
+                
+                <div class="interactive-element">
+                    <h3>Práctica: Escribe un comentario y observa</h3>
+                    <div class="form-group">
+                        <label for="code-comment">Escribe un comentario para generar código:</label>
+                        <input type="text" id="code-comment" placeholder="Ej: Función para validar un email">
+                    </div>
+                    <button class="btn" onclick="generateSuggestion()">Ver sugerencia de Copilot</button>
+                    <div class="code-block" id="suggestion-result" style="display: none;">
+                        <div class="code-header">
+                            <span class="code-language">JavaScript</span>
+                            <span>Sugerencia de Copilot</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-4">
+                <h2>Mejores prácticas con GitHub Copilot</h2>
+                <p>Para sacar el máximo provecho de GitHub Copilot, sigue estas mejores prácticas:</p>
+                
+                <h3>Escribe comentarios descriptivos</h3>
+                <p>Cuanto más específico seas en tus comentarios, mejores sugerencias recibirás.</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <span>Ejemplo de comentario efectivo</span>
+                    </div>
+                    <span class="code-comment"># Función que toma una lista de números y devuelve una nueva lista</span>
+                    <span class="code-comment"># con solo los números pares, ordenados de mayor a menor</span>
+                    <br>
+                    def filter_even_numbers(numbers):
+                </div>
+                
+                <h3>Divide y vencerás</h3>
+                <p>En lugar de pedir una función enorme, divídela en pasos más pequeños.</p>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Importante:</strong> Siempre revisa el código generado por Copilot. Puede contener errores o no seguir las mejores prácticas de tu proyecto.
+                </div>
+                
+                <h3>Usa nombres de variables significativos</h3>
+                <p>Los nombres descriptivos ayudan a Copilot a entender mejor tu intención.</p>
+                
+                <div class="interactive-element">
+                    <h3>Prueba de mejores prácticas</h3>
+                    <p>¿Cuál de estos comentarios generará una mejor sugerencia de Copilot?</p>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" name="comment-quality" value="bad" onclick="showFeedback('bad')">
+                            "hacer una funcion que haga cosas con numeros"
+                        </label>
+                        <label>
+                            <input type="radio" name="comment-quality" value="good" onclick="showFeedback('good')">
+                            "crear una función que calcule el promedio de una lista de números, ignorando los valores nulos"
+                        </label>
+                    </div>
+                    
+                    <div id="feedback-message" style="display: none; margin-top: 1rem; padding: 1rem; background-color: #e7f3ff; border-radius: 4px;">
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-5">
+                <h2>Casos de uso avanzados</h2>
+                <p>GitHub Copilot no solo sugiere código, puede ayudarte con muchas tareas de desarrollo:</p>
+                
+                <h3>Generación de pruebas unitarias</h3>
+                <p>Escribe la función y pídele a Copilot que genere las pruebas.</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <span>Generar pruebas unitarias</span>
+                    </div>
+                    <span class="code-comment"># Función a probar</span>
+                    def add(a, b):
+                        return a + b
+                    <br>
+                    <span class="code-comment"># Escribe "def test_" y Copilot sugerirá pruebas</span>
+                    def test_add():
+                        <span class="code-suggestion">assert add(2, 3) == 5
+                        assert add(-1, 1) == 0
+                        assert add(0, 0) == 0</span>
+                </div>
+                
+                <h3>Traducción entre lenguajes</h3>
+                <p>Convierte código de un lenguaje a otro.</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">JavaScript → Python</span>
+                        <span>Traducción de código</span>
+                    </div>
+                    <span class="code-comment">// Convierte esta función de JavaScript a Python</span>
+                    <span class="code-comment">// function filterArray(arr, condition) {</span>
+                    <span class="code-comment">//   return arr.filter(condition);</span>
+                    <span class="code-comment">// }</span>
+                    <br>
+                    def filter_array(arr, condition):
+                        <span class="code-suggestion">return [x for x in arr if condition(x)]</span>
+                </div>
+                
+                <h3>Generación de documentación</h3>
+                <p>Pídele a Copilot que documente tu código.</p>
+                
+                <div class="interactive-element">
+                    <h3>Ejercicio: Completa el código con Copilot</h3>
+                    <p>Intenta completar esta función usando lo que has aprendido:</p>
+                    
+                    <div class="code-editor" id="interactive-editor" contenteditable="true">
+<span class="code-comment"># Escribe un comentario para una función que:</span>
+<span class="code-comment"># - Tome una lista de strings</span>
+<span class="code-comment"># - Devuelva un diccionario con cada string como clave</span>
+<span class="code-comment"># - Y la longitud del string como valor</span>
+
+<span class="code-comment"># Ahora escribe "def" y comienza a escribir la función...</span>
+                    </div>
+                    <button class="btn" onclick="showSolution()">Ver solución sugerida</button>
+                    <div class="code-block" id="solution" style="display: none; margin-top: 1rem;">
+                        <div class="code-header">
+                            <span class="code-language">Python</span>
+                            <span>Solución sugerida por Copilot</span>
+                        </div>
+                        def string_length_dict(strings):
+                            return {s: len(s) for s in strings}
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-6">
+                <h2>Precios y alternativas</h2>
+                <p>GitHub Copilot es una herramienta de pago, pero ofrece opciones para diferentes usuarios.</p>
+                
+                <div class="pricing-table">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Estudiantes</h3>
+                        </div>
+                        <div class="pricing-body">
+                            <div class="price">Gratis</div>
+                            <ul class="feature-list">
+                                <li>Verificación de estudiante requerida</li>
+                                <li>Acceso completo a Copilot</li>
+                                <li>Mientras dure tu estatus estudiantil</li>
+                            </ul>
+                            <button class="btn" style="width: 100%;">Solicitar</button>
+                        </div>
+                    </div>
+                    
+                    
+                
+                
+                
+                <div class="tip-box">
+                    <strong>💡 Consejo final:</strong> GitHub Copilot es una herramienta poderosa, pero no reemplaza el entendimiento fundamental de programación. Úsala para aumentar tu productividad, no como sustituto de aprender.
+                </div>
+                
+                <div class="interactive-element">
+                    <h3>¡Felicidades!</h3>
+                    <p>Has completado el tutorial de GitHub Copilot. Ahora tienes los conocimientos para:</p>
+                    <ul>
+                        <li>Configurar GitHub Copilot en tu editor</li>
+                        <li>Usarlo efectivamente para escribir código</li>
+                        <li>Aplicar mejores prácticas</li>
+                        <li>Explorar casos de uso avanzados</li>
+                    </ul>
+                    <p>¡Comienza a usar Copilot en tus proyectos y descubre cómo puede acelerar tu desarrollo!</p>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn" onclick="restartTutorial()">Reiniciar Tutorial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Codelab: Introducción a GitHub Copilot - Para uso educativo</p>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        
+        // Actualizar la barra de progreso
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const percentage = (currentStep / totalSteps) * 100;
+            progress.style.width = `${percentage}%`;
+        }
+        
+        // Navegar al siguiente paso
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // Marcar el paso actual como completado
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
+                
+                // Ocultar el contenido actual
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                
+                // Avanzar al siguiente paso
+                currentStep++;
+                
+                // Mostrar el nuevo paso
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                
+                // Actualizar la barra de progreso
+                updateProgress();
+            }
+        }
+        
+        // Navegar al paso anterior
+        function prevStep() {
+            if (currentStep > 1) {
+                // Ocultar el contenido actual
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Retroceder al paso anterior
+                currentStep--;
+                
+                // Mostrar el nuevo paso
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                
+                // Actualizar la barra de progreso
+                updateProgress();
+            }
+        }
+        
+        // Navegar a un paso específico al hacer clic en la barra lateral
+        document.querySelectorAll('.step').forEach(step => {
+            step.addEventListener('click', function() {
+                const stepNumber = parseInt(this.getAttribute('data-step'));
+                
+                // Ocultar todos los contenidos
+                document.querySelectorAll('.step-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Quitar la clase active de todos los pasos
+                document.querySelectorAll('.step').forEach(s => {
+                    s.classList.remove('active');
+                });
+                
+                // Mostrar el contenido del paso seleccionado
+                document.getElementById(`step-${stepNumber}`).classList.add('active');
+                this.classList.add('active');
+                
+                // Actualizar el paso actual
+                currentStep = stepNumber;
+                
+                // Actualizar la barra de progreso
+                updateProgress();
+            });
+        });
+        
+        // Simular configuración de Copilot
+        function simulateSetup() {
+            const username = document.getElementById('github-username').value;
+            const editor = document.getElementById('editor').value;
+            
+            if (username) {
+                document.getElementById('setup-success').style.display = 'block';
+            } else {
+                alert('Por favor, ingresa tu nombre de usuario de GitHub.');
+            }
+        }
+        
+        // Generar sugerencia basada en comentario
+        function generateSuggestion() {
+            const comment = document.getElementById('code-comment').value;
+            const resultDiv = document.getElementById('suggestion-result');
+            
+            if (comment) {
+                // Ejemplos de sugerencias basadas en comentarios comunes
+                let suggestion = '';
+                
+                if (comment.toLowerCase().includes('email') || comment.toLowerCase().includes('correo')) {
+                    suggestion = `function validateEmail(email) {\n  const regex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n  return regex.test(email);\n}`;
+                } else if (comment.toLowerCase().includes('contraseña') || comment.toLowerCase().includes('password')) {
+                    suggestion = `function validatePassword(password) {\n  // Al menos 8 caracteres, una mayúscula, una minúscula y un número\n  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$/;\n  return regex.test(password);\n}`;
+                } else if (comment.toLowerCase().includes('número') || comment.toLowerCase().includes('number')) {
+                    suggestion = `function isPrime(num) {\n  if (num <= 1) return false;\n  for (let i = 2; i <= Math.sqrt(num); i++) {\n    if (num % i === 0) return false;\n  }\n  return true;\n}`;
+                } else {
+                    suggestion = `// Basado en tu comentario: "${comment}"\n// Copilot generaría aquí código relevante\n// Intenta ser más específico para mejores resultados`;
+                }
+                
+                resultDiv.innerHTML = `<div class="code-header"><span class="code-language">JavaScript</span><span>Sugerencia de Copilot</span></div>${suggestion}`;
+                resultDiv.style.display = 'block';
+            } else {
+                alert('Por favor, escribe un comentario primero.');
+            }
+        }
+        
+        // Mostrar feedback sobre calidad de comentarios
+        function showFeedback(quality) {
+            const feedbackDiv = document.getElementById('feedback-message');
+            
+            if (quality === 'bad') {
+                feedbackDiv.innerHTML = '<strong>❌ No es ideal:</strong> Este comentario es demasiado vago. Copilot no tendrá suficiente contexto para generar una buena sugerencia.';
+                feedbackDiv.style.backgroundColor = '#f8d7da';
+                feedbackDiv.style.color = '#721c24';
+            } else {
+                feedbackDiv.innerHTML = '<strong>✅ Excelente:</strong> Este comentario es específico y descriptivo. Copilot entenderá exactamente lo que necesitas y generará una sugerencia precisa.';
+                feedbackDiv.style.backgroundColor = '#d1edff';
+                feedbackDiv.style.color = '#0c5460';
+            }
+            
+            feedbackDiv.style.display = 'block';
+        }
+        
+        // Mostrar solución para el ejercicio interactivo
+        function showSolution() {
+            document.getElementById('solution').style.display = 'block';
+        }
+        
+        // Reiniciar el tutorial
+        function restartTutorial() {
+            // Reiniciar al primer paso
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            currentStep = 1;
+            document.getElementById('step-1').classList.add('active');
+            document.querySelector('.step[data-step="1"]').classList.add('active');
+            
+            // Ocultar todos los mensajes de éxito
+            document.querySelectorAll('.success-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            
+            // Ocultar elementos interactivos
+            document.getElementById('suggestion-result').style.display = 'none';
+            document.getElementById('feedback-message').style.display = 'none';
+            document.getElementById('solution').style.display = 'none';
+            
+            // Limpiar campos de formulario
+            document.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+            
+            // Reiniciar la barra de progreso
+            updateProgress();
+        }
+        
+        // Inicializar la barra de progreso
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codelab: Introducción a Git y GitHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Codelab: Introducción a Git y GitHub</h1>
+    </header>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h2>Pasos del Tutorial</h2>
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                ¿Qué es Git y GitHub?
+            </div>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                Crear una cuenta en GitHub
+            </div>
+            <div class="step" data-step="3">
+                <span class="step-number">3</span>
+                Configurar Git en tu equipo
+            </div>
+            <div class="step" data-step="4">
+                <span class="step-number">4</span>
+                Crear tu primer repositorio
+            </div>
+            <div class="step" data-step="5">
+                <span class="step-number">5</span>
+                Hacer tu primer commit
+            </div>
+            <div class="step" data-step="6">
+                <span class="step-number">6</span>
+                Subir cambios a GitHub
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="step-content active" id="step-1">
+                <h2>¿Qué es Git y GitHub?</h2>
+                <p>Git es un sistema de control de versiones distribuido que te permite rastrear cambios en tus archivos a lo largo del tiempo. Es especialmente útil para desarrolladores que trabajan en equipo.</p>
+                
+                <h3>Git vs GitHub</h3>
+                <ul>
+                    <li><strong>Git</strong>: Es la herramienta de control de versiones que se ejecuta localmente en tu computadora.</li>
+                    <li><strong>GitHub</strong>: Es una plataforma en la nube que aloja repositorios Git y facilita la colaboración.</li>
+                </ul>
+                
+                <h3>Conceptos básicos</h3>
+                <ul>
+                    <li><strong>Repositorio</strong>: Un proyecto de Git que contiene todos los archivos y su historial.</li>
+                    <li><strong>Commit</strong>: Un conjunto de cambios guardados en el historial del repositorio.</li>
+                    <li><strong>Rama (Branch)</strong>: Una línea de desarrollo independiente dentro del repositorio.</li>
+                    <li><strong>Merge</strong>: Combinar cambios de diferentes ramas.</li>
+                </ul>
+                
+                <div class="navigation">
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-2">
+                <h2>Crear una cuenta en GitHub</h2>
+                <p>GitHub es la plataforma más popular para alojar proyectos con Git. Sigue estos pasos para crear tu cuenta:</p>
+                
+                <ol>
+                    <li>Ve a <a href="https://github.com" target="_blank">github.com</a></li>
+                    <li>Haz clic en "Sign up"</li>
+                    <li>Ingresa tu correo electrónico</li>
+                    <li>Crea una contraseña segura</li>
+                    <li>Elige un nombre de usuario</li>
+                    <li>Verifica tu cuenta a través del correo electrónico</li>
+                </ol>
+                
+                <div class="interactive-element">
+                    <h3>Simulación de registro</h3>
+                    <div class="form-group">
+                        <label for="username">Nombre de usuario:</label>
+                        <input type="text" id="username" placeholder="Elige un nombre de usuario">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo electrónico:</label>
+                        <input type="email" id="email" placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input type="password" id="password" placeholder="Crea una contraseña segura">
+                    </div>
+                    <button class="btn" onclick="simulateSignup()">Crear cuenta</button>
+                    <div class="success-message" id="signup-success">
+                        ¡Cuenta creada exitosamente! Ahora puedes continuar con el siguiente paso.
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-3">
+                <h2>Configurar Git en tu equipo</h2>
+                <p>Antes de usar Git, necesitas configurar tu identidad. Esto es importante porque cada commit que hagas estará asociado a esta información.</p>
+                
+                <h3>Instalación de Git</h3>
+                <p>Si no tienes Git instalado, descárgalo desde <a href="https://git-scm.com/" target="_blank">git-scm.com</a> y sigue las instrucciones de instalación para tu sistema operativo.</p>
+                
+                <h3>Configuración inicial</h3>
+                <p>Abre tu terminal o línea de comandos y ejecuta los siguientes comandos (reemplaza con tu información):</p>
+                
+                <div class="terminal" id="terminal-step3">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git config --global user.name "Tu Nombre"</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git config --global user.email "tu@email.com"</span>
+                    </div>
+                </div>
+                
+                <div class="interactive-element">
+                    <h3>Configura tu identidad</h3>
+                    <div class="form-group">
+                        <label for="git-name">Tu nombre:</label>
+                        <input type="text" id="git-name" placeholder="Tu nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="git-email">Tu correo electrónico:</label>
+                        <input type="email" id="git-email" placeholder="tu@email.com">
+                    </div>
+                    <button class="btn" onclick="configureGit()">Configurar Git</button>
+                    <div class="success-message" id="git-config-success">
+                        ¡Git configurado correctamente! Ahora puedes continuar.
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-4">
+                <h2>Crear tu primer repositorio</h2>
+                <p>Un repositorio es donde Git almacena todos los archivos y el historial de cambios de tu proyecto.</p>
+                
+                <h3>Crear un repositorio local</h3>
+                <p>Para crear un nuevo repositorio, abre tu terminal y navega a la carpeta donde quieres almacenar tu proyecto, luego ejecuta:</p>
+                
+                <div class="terminal" id="terminal-step4">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">mkdir mi-primer-proyecto</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">cd mi-primer-proyecto</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git init</span>
+                    </div>
+                    <div class="terminal-output">Initialized empty Git repository in /ruta/a/mi-primer-proyecto/.git/</div>
+                </div>
+                
+                <h3>Crear un repositorio en GitHub</h3>
+                <p>También puedes crear un repositorio en GitHub y luego clonarlo localmente:</p>
+                <ol>
+                    <li>Inicia sesión en GitHub</li>
+                    <li>Haz clic en el icono "+" en la esquina superior derecha</li>
+                    <li>Selecciona "New repository"</li>
+                    <li>Asigna un nombre a tu repositorio</li>
+                    <li>Elige si será público o privado</li>
+                    <li>Haz clic en "Create repository"</li>
+                </ol>
+                
+                <div class="interactive-element">
+                    <h3>Simulación de creación de repositorio</h3>
+                    <div class="form-group">
+                        <label for="repo-name">Nombre del repositorio:</label>
+                        <input type="text" id="repo-name" placeholder="mi-primer-proyecto">
+                    </div>
+                    <div class="form-group">
+                        <label for="repo-description">Descripción (opcional):</label>
+                        <input type="text" id="repo-description" placeholder="Mi primer proyecto con Git">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" name="visibility" value="public" checked> Público
+                        </label>
+                        <label>
+                            <input type="radio" name="visibility" value="private"> Privado
+                        </label>
+                    </div>
+                    <button class="btn" onclick="createRepository()">Crear repositorio</button>
+                    <div class="success-message" id="repo-success">
+                        ¡Repositorio creado exitosamente! Ahora puedes continuar.
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-5">
+                <h2>Hacer tu primer commit</h2>
+                <p>Un commit es como una "fotografía" de los cambios en tu proyecto en un momento específico. Para hacer un commit, sigue estos pasos:</p>
+                
+                <ol>
+                    <li>Crea o modifica archivos en tu proyecto</li>
+                    <li>Añade los archivos al área de preparación (staging)</li>
+                    <li>Realiza el commit con un mensaje descriptivo</li>
+                </ol>
+                
+                <div class="terminal" id="terminal-step5">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">echo "# Mi Primer Proyecto" >> README.md</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git add README.md</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git commit -m "Agregar archivo README"</span>
+                    </div>
+                    <div class="terminal-output">[main (root-commit) abc1234] Agregar archivo README</div>
+                    <div class="terminal-output">1 file changed, 1 insertion(+)</div>
+                    <div class="terminal-output">create mode 100644 README.md</div>
+                </div>
+                
+                <h3>Flujo de trabajo básico</h3>
+                <ul>
+                    <li><strong>Working Directory</strong>: Donde realizas cambios en tus archivos</li>
+                    <li><strong>Staging Area</strong>: Donde preparas los archivos para el commit</li>
+                    <li><strong>Repository</strong>: Donde se almacenan los commits de forma permanente</li>
+                </ul>
+                
+                <div class="interactive-element">
+                    <h3>Simulación de commit</h3>
+                    <div class="form-group">
+                        <label for="commit-message">Mensaje del commit:</label>
+                        <input type="text" id="commit-message" placeholder="Describe los cambios realizados">
+                    </div>
+                    <button class="btn" onclick="makeCommit()">Realizar commit</button>
+                    <div class="success-message" id="commit-success">
+                        ¡Commit realizado exitosamente! Los cambios han sido guardados en el historial.
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-6">
+                <h2>Subir cambios a GitHub</h2>
+                <p>Para compartir tu trabajo con otros o tener una copia de seguridad en la nube, puedes subir tu repositorio local a GitHub.</p>
+                
+                <h3>Conectar repositorio local con GitHub</h3>
+                <p>Si creaste tu repositorio localmente, necesitas conectarlo con un repositorio remoto en GitHub:</p>
+                
+                <div class="terminal" id="terminal-step6">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git remote add origin https://github.com/tu-usuario/mi-primer-proyecto.git</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git branch -M main</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command">git push -u origin main</span>
+                    </div>
+                    <div class="terminal-output">Enumerating objects: 3, done.</div>
+                    <div class="terminal-output">Counting objects: 100% (3/3), done.</div>
+                    <div class="terminal-output">Writing objects: 100% (3/3), 245 bytes | 245.00 KiB/s, done.</div>
+                    <div class="terminal-output">Total 3 (delta 0), reused 0 (delta 0)</div>
+                    <div class="terminal-output">To https://github.com/tu-usuario/mi-primer-proyecto.git</div>
+                    <div class="terminal-output"> * [new branch]      main -> main</div>
+                    <div class="terminal-output">Branch 'main' set up to track remote branch 'main' from 'origin'.</div>
+                </div>
+                
+                <h3>Subir cambios futuros</h3>
+                <p>Una vez configurado, para subir cambios futuros solo necesitas:</p>
+                
+                <div class="code-block">
+                    git add .<br>
+                    git commit -m "Descripción de los cambios"<br>
+                    git push
+                </div>
+                
+                <div class="interactive-element">
+                    <h3>¡Felicidades!</h3>
+                    <p>Has completado el tutorial de introducción a Git y GitHub. Ahora tienes los conocimientos básicos para:</p>
+                    <ul>
+                        <li>Crear y gestionar repositorios</li>
+                        <li>Realizar commits de tus cambios</li>
+                        <li>Colaborar con otros mediante GitHub</li>
+                    </ul>
+                    <p>Continúa practicando y explorando más funcionalidades de Git como las ramas (branches), fusiones (merges) y solicitudes de extracción (pull requests).</p>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn" onclick="restartTutorial()">Reiniciar Tutorial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Codelab: Introducción a Git y GitHub - Para uso educativo</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

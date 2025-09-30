@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codelab: GitHub Education y Student Developer Pack</title>
+    <style>
+        :root {
+            --primary-color: #2f2f2f;
+            --secondary-color: #6e40c9;
+            --accent-color: #3fb950;
+            --education-color: #0d8b68;
+            --light-color: #f6f8fa;
+            --border-color: #e1e4e8;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--education-color));
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .education-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background-color: var(--light-color);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .step {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step:hover {
+            background-color: #e8eaed;
+        }
+        
+        .step.active {
+            background-color: var(--education-color);
+            color: white;
+        }
+        
+        .step.completed {
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .step-content {
+            display: none;
+        }
+        
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            color: var(--education-color);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-header {
+            background-color: #2d2d2d;
+            padding: 0.5rem 1rem;
+            margin: -1rem -1rem 1rem -1rem;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--education-color);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #0a6b50;
+            transform: translateY(-2px);
+        }
+        
+        .btn-next {
+            float: right;
+        }
+        
+        .btn-prev {
+            float: left;
+            background-color: #6c757d;
+        }
+        
+        .btn-prev:hover {
+            background-color: #5a6268;
+        }
+        
+        .navigation {
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--education-color));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .checkmark {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            margin-right: 10px;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .step.active .step-number {
+            background-color: white;
+            color: var(--education-color);
+        }
+        
+        .step.completed .step-number {
+            background-color: var(--accent-color);
+        }
+        
+        .interactive-element {
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .benefit-card {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--education-color);
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tool-card {
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .tool-logo {
+            height: 40px;
+            margin-bottom: 0.5rem;
+            object-fit: contain;
+        }
+        
+        .tip-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid var(--education-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .document-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .document-upload:hover {
+            border-color: var(--education-color);
+            background-color: #f0f9f6;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: 1rem;
+        }
+        
+        .document-upload:hover .upload-icon {
+            color: var(--education-color);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .verification-steps {
+            counter-reset: step-counter;
+            margin: 1.5rem 0;
+        }
+        
+        .verification-step {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .verification-step:before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--education-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .benefits-grid,
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--education-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background-color: var(--education-color);
+            border-radius: 50%;
+        }
+        
+        .resource-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .resource-list li {
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .resource-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .resource-list a {
+            color: var(--education-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .resource-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="education-icon">🎓</div>
+            <h1>Codelab: GitHub Education y Student Developer Pack</h1>
+            <p>Accede a herramientas profesionales gratuitas para estudiantes</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h2>Pasos del Tutorial</h2>
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                ¿Qué es GitHub Education?
+            </div>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                Requisitos de elegibilidad
+            </div>
+            <div class="step" data-step="3">
+                <span class="step-number">3</span>
+                Preparar la documentación
+            </div>
+            <div class="step" data-step="4">
+                <span class="step-number">4</span>
+                Solicitar GitHub Education
+            </div>
+            <div class="step" data-step="5">
+                <span class="step-number">5</span>
+                Student Developer Pack
+            </div>
+            <div class="step" data-step="6">
+                <span class="step-number">6</span>
+                Recursos adicionales
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="step-content active" id="step-1">
+                <h2>¿Qué es GitHub Education?</h2>
+                <p>GitHub Education es un programa de GitHub diseñado para apoyar a estudiantes, profesores e instituciones educativas con herramientas y recursos gratuitos para el aprendizaje y la enseñanza de desarrollo de software.</p>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💼</div>
+                        <h3>Student Developer Pack</h3>
+                        <p>Acceso gratuito a herramientas de desarrollo profesionales</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🏫</div>
+                        <h3>GitHub Classroom</h3>
+                        <p>Plataforma para gestionar tareas y evaluaciones de código</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🌍</div>
+                        <h3>Comunidad Global</h3>
+                        <p>Conecta con otros estudiantes y profesionales</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🚀</div>
+                        <h3>Recursos de Aprendizaje</h3>
+                        <p>Tutoriales, documentación y proyectos prácticos</p>
+                    </div>
+                </div>
+                
+                <h3>Beneficios principales</h3>
+                <ul>
+                    <li><strong>GitHub Pro gratuita</strong>: Funciones avanzadas de GitHub sin costo</li>
+                    <li><strong>Herramientas premium</strong>: Acceso a más de 100 herramientas de desarrollo</li>
+                    <li><strong>Créditos en la nube</strong>: Para AWS, Azure, Google Cloud y más</li>
+                    <li><strong>Dominios gratuitos</strong>: Para tus proyectos personales</li>
+                    <li><strong>Cursos y tutoriales</strong>: De plataformas educativas líderes</li>
+                </ul>
+                
+                <div class="tip-box">
+                    <strong>💡 Datos importantes:</strong> El Student Developer Pack tiene un valor de más de $200,000 en beneficios y herramientas para estudiantes.
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-2">
+                <h2>Requisitos de elegibilidad</h2>
+                <p>Para poder acceder a GitHub Education y el Student Developer Pack, debes cumplir con ciertos requisitos de elegibilidad.</p>
+                
+                <h3>¿Quién puede aplicar?</h3>
+                <ul>
+                    <li>Estudiantes actualmente inscritos en una institución educativa acreditada</li>
+                    <li>Estudiantes de 13 años o mayores</li>
+                    <li>Estudiantes de tiempo completo o medio tiempo</li>
+                    <li>Estudiantes de secundaria, pregrado, posgrado o doctorado</li>
+                    <li>Estudiantes de bootcamps o programas de coding reconocidos</li>
+                </ul>
+                
+                <h3>Documentación requerida</h3>
+                <p>Necesitarás proporcionar prueba de tu estatus estudiantil. GitHub acepta:</p>
+                
+                <div class="interactive-element">
+                    <h3>Verificador de elegibilidad</h3>
+                    <div class="form-group">
+                        <label for="student-status">¿Cuál es tu estatus estudiantil?</label>
+                        <select id="student-status" onchange="checkEligibility()">
+                            <option value="">Selecciona una opción</option>
+                            <option value="highschool">Estudiante de secundaria/preparatoria</option>
+                            <option value="undergrad">Estudiante universitario de pregrado</option>
+                            <option value="grad">Estudiante de posgrado/maestría</option>
+                            <option value="phd">Estudiante de doctorado</option>
+                            <option value="bootcamp">Estudiante de bootcamp de programación</option>
+                            <option value="homeschool">Estudiante homeschool</option>
+                            <option value="not-student">No soy estudiante actualmente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="institution-type">Tipo de institución</label>
+                        <select id="institution-type" onchange="checkEligibility()">
+                            <option value="">Selecciona una opción</option>
+                            <option value="accredited">Institución acreditada</option>
+                            <option value="bootcamp">Bootcamp reconocido</option>
+                            <option value="other">Otra institución</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">Edad</label>
+                        <input type="number" id="age" min="13" max="100" onchange="checkEligibility()" placeholder="Tu edad">
+                    </div>
+                    
+                    <div id="eligibility-result" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 4px;"></div>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Importante:</strong> GitHub verifica rigurosamente la documentación. Proporcionar información falsa puede resultar en la suspensión permanente de tu cuenta.
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-3">
+                <h2>Preparar la documentación</h2>
+                <p>Para una solicitud exitosa, necesitas preparar documentación que pruebe tu estatus estudiantil.</p>
+                
+                <div class="verification-steps">
+                    <div class="verification-step">
+                        <h3>Documentos aceptables</h3>
+                        <p>GitHub acepta los siguientes documentos como prueba:</p>
+                        <ul>
+                            <li>Identificación estudiantil actual con fecha de emisión</li>
+                            <li>Carta de aceptación o inscripción de la institución</li>
+                            <li>Horario de clases actual</li>
+                            <li>Transcripción o boleta de calificaciones</li>
+                            <li>Correo electrónico institucional verificado</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="verification-step">
+                        <h3>Requisitos de los documentos</h3>
+                        <p>Asegúrate de que tu documentación cumpla con estos requisitos:</p>
+                        <ul>
+                            <li>Debe mostrar claramente tu nombre</li>
+                            <li>Debe incluir fecha de emisión o vigencia</li>
+                            <li>Debe mostrar el nombre de la institución</li>
+                            <li>Debe estar en un idioma que GitHub pueda verificar</li>
+                            <li>Las imágenes deben ser nítidas y legibles</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="interactive-element">
+                    <h3>Simulador de documentación</h3>
+                    <p>Sube un documento para verificar si cumple con los requisitos:</p>
+                    
+                    <div class="document-upload" onclick="document.getElementById('file-input').click()">
+                        <div class="upload-icon">📄</div>
+                        <p>Haz clic para seleccionar un documento</p>
+                        <p><small>Formatos aceptados: JPG, PNG, PDF (máx. 10MB)</small></p>
+                        <input type="file" id="file-input" style="display: none;" onchange="validateDocument()">
+                    </div>
+                    
+                    <div id="document-validation" style="display: none; margin-top: 1rem;">
+                        <h4>Verificación de documento:</h4>
+                        <ul id="validation-list"></ul>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Consejo:</strong> Si tu institución proporciona correo electrónico institucional, verifícalo en tu cuenta de GitHub. Esto puede acelerar el proceso de verificación.
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-4">
+                <h2>Solicitar GitHub Education</h2>
+                <p>Una vez que tengas tu documentación lista, es hora de realizar la solicitud oficial.</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h3>Paso 1: Visita GitHub Education</h3>
+                        <p>Ve a <a href="https://education.github.com" target="_blank">education.github.com</a> y haz clic en "Get student benefits".</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h3>Paso 2: Inicia sesión</h3>
+                        <p>Inicia sesión con tu cuenta de GitHub. Si no tienes una, créala primero.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h3>Paso 3: Completa el formulario</h3>
+                        <p>Proporciona información sobre tu institución y programa de estudios.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h3>Paso 4: Sube documentación</h3>
+                        <p>Sube los documentos que preparaste en el paso anterior.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h3>Paso 5: Espera la verificación</h3>
+                        <p>GitHub revisará tu solicitud. Esto puede tomar desde horas hasta algunos días.</p>
+                    </div>
+                </div>
+                
+                <div class="interactive-element">
+                    <h3>Simulación de solicitud</h3>
+                    <div class="form-group">
+                        <label for="full-name">Nombre completo (como aparece en documentos):</label>
+                        <input type="text" id="full-name" placeholder="Tu nombre completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="institution-name">Nombre de la institución educativa:</label>
+                        <input type="text" id="institution-name" placeholder="Nombre de tu escuela/universidad">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="graduation-year">Año de graduación estimado:</label>
+                        <input type="number" id="graduation-year" min="2023" max="2030" placeholder="Ej: 2025">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="academic-level">Nivel académico:</label>
+                        <select id="academic-level">
+                            <option value="">Selecciona tu nivel</option>
+                            <option value="highschool">Secundaria/Preparatoria</option>
+                            <option value="associate">Técnico/Asociado</option>
+                            <option value="bachelor">Licenciatura</option>
+                            <option value="master">Maestría</option>
+                            <option value="phd">Doctorado</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn" onclick="submitApplication()">Enviar solicitud</button>
+                    
+                    <div class="success-message" id="application-success">
+                        <h4>¡Solicitud enviada exitosamente!</h4>
+                        <p>Tu solicitud ha sido procesada. El estado de verificación se actualizará en:</p>
+                        <p id="verification-timer" style="font-weight: bold; font-size: 1.2rem;"></p>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-5">
+                <h2>Student Developer Pack</h2>
+                <p>Una vez aprobado, tendrás acceso al Student Developer Pack con más de 100 herramientas y beneficios.</p>
+                
+                <h3>Herramientas destacadas</h3>
+                <div class="tool-grid">
+                   
+                    <div class="tool-card">
+                        <div class="tool-logo">☁️</div>
+                        <h4>GitHub Pro</h4>
+                        <p>Funciones avanzadas de GitHub</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-logo">🤖</div>
+                        <h4>GitHub Copilot</h4>
+                        <p>Asistente de IA para código</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-logo">⚡</div>
+                        <h4>Azure Credits</h4>
+                        <p>$100 en créditos para Azure</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-logo">📊</div>
+                        <h4>DataCamp</h4>
+                        <p>3 meses de acceso gratuito</p>
+                    </div>
+                   
+                    
+                </div>
+                
+                <h3>Cómo activar los beneficios</h3>
+                <ol>
+                    <li>Una vez aprobado, visita tu <a href="https://education.github.com/pack" target="_blank">Student Developer Pack</a></li>
+                    <li>Revisa todas las ofertas disponibles</li>
+                    <li>Haz clic en "Get your pack" para cada oferta que quieras activar</li>
+                    <li>Sigue las instrucciones específicas de cada proveedor</li>
+                    <li>¡Disfruta de tus nuevas herramientas!</li>
+                </ol>
+                
+                <div class="interactive-element">
+                    <h3>Planificador de beneficios</h3>
+                    <p>Selecciona las herramientas que más te interesan para crear tu plan de uso:</p>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="benefit-copilot" value="copilot">
+                            GitHub Copilot (Asistente de código con IA)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="benefit-domain" value="domain">
+                            Namecheap (Dominio .me gratuito)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="benefit-cloud" value="cloud">
+                            Azure Credits ($100 en créditos)
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="benefit-learning" value="learning">
+                            DataCamp (Cursos de datos)
+                        </label>
+                    </div>
+                    
+                    <button class="btn" onclick="generatePlan()">Generar plan de uso</button>
+                    
+                    <div id="usage-plan" style="display: none; margin-top: 1rem; padding: 1rem; background-color: #f0f9f6; border-radius: 6px;">
+                        <h4>Tu plan de uso recomendado:</h4>
+                        <ul id="plan-items"></ul>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn btn-next" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="step-content" id="step-6">
+                <h2>Recursos adicionales</h2>
+                <p>Además del Student Developer Pack, GitHub Education ofrece otros recursos valiosos para estudiantes.</p>
+                
+                <h3>GitHub Classroom</h3>
+                <p>Una herramienta para educadores que simplifica la distribución de tareas y la recolección de código.</p>
+                <ul>
+                    <li>Creación automática de repositorios para tareas</li>
+                    <li>Integración con sistemas de calificación</li>
+                    <li>Feedback automatizado en pull requests</li>
+                    <li>Seguimiento del progreso estudiantil</li>
+                </ul>
+                
+                <h3>Campus Experts</h3>
+                <p>Un programa de liderazgo para estudiantes que quieren construir comunidades tecnológicas en sus campus.</p>
+                <ul>
+                    <li>Entrenamiento en liderazgo comunitario</li>
+                    <li>Mentoría de profesionales de GitHub</li>
+                    <li>Recursos para eventos y talleres</li>
+                    <li>Red global de campus experts</li>
+                </ul>
+                
+                <h3>Recursos de aprendizaje</h3>
+                <ul class="resource-list">
+                    <li><a href="https://lab.github.com" target="_blank">GitHub Learning Lab</a> - Cursos interactivos de Git y GitHub</li>
+                    <li><a href="https://docs.github.com/es/get-started" target="_blank">Documentación de GitHub</a> - Guías oficiales en español</li>
+                    <li><a href="https://skills.github.com" target="_blank">GitHub Skills</a> - Cursos prácticos de desarrollo</li>
+                    <li><a href="https://education.github.com/experts" target="_blank">Campus Experts</a> - Programa de liderazgo estudiantil</li>
+                    <li><a href="https://education.github.com/teachers" target="_blank">Recursos para educadores</a> - Herramientas para enseñanza</li>
+                </ul>
+                
+                <div class="interactive-element">
+                    <h3>¡Felicidades!</h3>
+                    <p>Has completado el tutorial de GitHub Education y Student Developer Pack. Ahora tienes todo el conocimiento para:</p>
+                    <ul>
+                        <li>Verificar tu elegibilidad para GitHub Education</li>
+                        <li>Preparar la documentación necesaria</li>
+                        <li>Solicitar y obtener el Student Developer Pack</li>
+                        <li>Aprovechar las más de 100 herramientas gratuitas</li>
+                        <li>Acceder a recursos adicionales de GitHub Education</li>
+                    </ul>
+                    <p>¡No esperes más! Aplica hoy mismo y comienza a usar herramientas profesionales en tus proyectos de desarrollo.</p>
+                    
+                    <a href="https://education.github.com" target="_blank" class="btn">Aplicar a GitHub Education</a>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevStep()">Anterior</button>
+                    <button class="btn" onclick="restartTutorial()">Reiniciar Tutorial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Codelab: GitHub Education y Student Developer Pack - Para uso educativo</p>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        
+        // Actualizar la barra de progreso
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const percentage = (currentStep / totalSteps) * 100;
+            progress.style.width = `${percentage}%`;
+        }
+        
+        // Navegar al siguiente paso
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // Marcar el paso actual como completado
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
+                
+                // Ocultar el contenido actual
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                
+                // Avanzar al siguiente paso
+                currentStep++;
+                
+                // Mostrar el nuevo paso
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                
+                // Actualizar la barra de progreso
+                updateProgress();
+            }
+        }
+        
+        // Navegar al paso anterior
+        function prevStep() {
+            if (currentStep > 1) {
+                // Ocultar el contenido actual
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Retroceder al paso anterior
+                currentStep--;
+                
+                // Mostrar el nuevo paso
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                
+                // Actualizar la barra de progreso
+                updateProgress();
+            }
+        }
+        
+        // Navegar a un paso específico al hacer clic en la barra lateral
+        document.querySelectorAll('.step').forEach(step => {
+            step.addEventListener('click', function() {
+                const stepNumber = parseInt(this.getAttribute('data-step'));
+                
+                // Ocultar todos los contenidos
+                document.querySelectorAll('.step-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Quitar la clase active de todos los pasos
+                document.querySelectorAll('.step').forEach(s => {
+                    s.classList.remove('active');
+                });
+                
+                // Mostrar el contenido del paso seleccionado
+                document.getElementById(`step-${stepNumber}`).classList.add('active');
+                this.classList.add('active');
+                
+                // Actualizar el paso actual
+                currentStep = stepNumber;
+                
+                // Actualizar la barra de progreso
+                updateProgress();
+            });
+        });
+        
+        // Verificar elegibilidad
+        function checkEligibility() {
+            const status = document.getElementById('student-status').value;
+            const institution = document.getElementById('institution-type').value;
+            const age = parseInt(document.getElementById('age').value);
+            const resultDiv = document.getElementById('eligibility-result');
+            
+            if (status && institution && age) {
+                let isEligible = true;
+                let message = '';
+                
+                if (status === 'not-student') {
+                    isEligible = false;
+                    message = '❌ No eres elegible. Debes ser estudiante actualmente.';
+                } else if (age < 13) {
+                    isEligible = false;
+                    message = '❌ No eres elegible. Debes tener al menos 13 años.';
+                } else if (institution === 'other') {
+                    isEligible = false;
+                    message = '❌ Tu institución necesita verificación adicional. Contacta a GitHub support.';
+                } else {
+                    message = '✅ ¡Eres elegible! Puedes proceder con tu solicitud.';
+                }
+                
+                resultDiv.innerHTML = message;
+                resultDiv.style.display = 'block';
+                resultDiv.style.backgroundColor = isEligible ? '#d4edda' : '#f8d7da';
+                resultDiv.style.color = isEligible ? '#155724' : '#721c24';
+            }
+        }
+        
+        // Validar documento simulado
+        function validateDocument() {
+            const validationDiv = document.getElementById('document-validation');
+            const list = document.getElementById('validation-list');
+            
+            list.innerHTML = `
+                <li>✅ Formato de archivo aceptado</li>
+                <li>✅ Tamaño dentro del límite</li>
+                <li>❓ Verificando información legible...</li>
+                <li>❓ Verificando fecha de emisión...</li>
+                <li>❓ Verificando nombre de institución...</li>
+            `;
+            
+            validationDiv.style.display = 'block';
+            
+            // Simular verificación progresiva
+            setTimeout(() => {
+                list.innerHTML = `
+                    <li>✅ Formato de archivo aceptado</li>
+                    <li>✅ Tamaño dentro del límite</li>
+                    <li>✅ Información legible detectada</li>
+                    <li>✅ Fecha de emisión verificada</li>
+                    <li>✅ Nombre de institución identificado</li>
+                `;
+            }, 2000);
+        }
+        
+        // Enviar solicitud simulada
+        function submitApplication() {
+            const name = document.getElementById('full-name').value;
+            const institution = document.getElementById('institution-name').value;
+            const year = document.getElementById('graduation-year').value;
+            const level = document.getElementById('academic-level').value;
+            
+            if (name && institution && year && level) {
+                const successDiv = document.getElementById('application-success');
+                const timerDiv = document.getElementById('verification-timer');
+                
+                successDiv.style.display = 'block';
+                
+                // Simular cuenta regresiva de verificación
+                let seconds = 10;
+                timerDiv.textContent = `${seconds} segundos`;
+                
+                const countdown = setInterval(() => {
+                    seconds--;
+                    timerDiv.textContent = `${seconds} segundos`;
+                    
+                    if (seconds <= 0) {
+                        clearInterval(countdown);
+                        timerDiv.innerHTML = '<span style="color: var(--education-color);">✅ Verificación completada</span>';
+                    }
+                }, 1000);
+            } else {
+                alert('Por favor, completa todos los campos del formulario.');
+            }
+        }
+        
+        // Generar plan de uso de beneficios
+        function generatePlan() {
+            const planDiv = document.getElementById('usage-plan');
+            const planItems = document.getElementById('plan-items');
+            
+            const selectedBenefits = [];
+            if (document.getElementById('benefit-copilot').checked) {
+                selectedBenefits.push('GitHub Copilot: Úsalo para acelerar tu desarrollo y aprender mejores prácticas de código');
+            }
+            if (document.getElementById('benefit-domain').checked) {
+                selectedBenefits.push('Namecheap Domain: Crea un portfolio personal con tu dominio .me gratuito');
+            }
+            if (document.getElementById('benefit-cloud').checked) {
+                selectedBenefits.push('Azure Credits: Despliega tus proyectos web y experimenta con servicios en la nube');
+            }
+            if (document.getElementById('benefit-design').checked) {
+                selectedBenefits.push('Figma/Canva: Diseña interfaces de usuario y materiales para tus proyectos');
+            }
+            if (document.getElementById('benefit-learning').checked) {
+                selectedBenefits.push('DataCamp: Fortalece tus habilidades en ciencia de datos y análisis');
+            }
+            
+            if (selectedBenefits.length > 0) {
+                planItems.innerHTML = selectedBenefits.map(item => `<li>${item}</li>`).join('');
+                planDiv.style.display = 'block';
+            } else {
+                alert('Por favor, selecciona al menos un beneficio para generar un plan.');
+            }
+        }
+        
+        // Reiniciar el tutorial
+        function restartTutorial() {
+            // Reiniciar al primer paso
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            currentStep = 1;
+            document.getElementById('step-1').classList.add('active');
+            document.querySelector('.step[data-step="1"]').classList.add('active');
+            
+            // Ocultar todos los mensajes y resultados
+            document.querySelectorAll('.success-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            document.getElementById('eligibility-result').style.display = 'none';
+            document.getElementById('document-validation').style.display = 'none';
+            document.getElementById('usage-plan').style.display = 'none';
+            
+            // Limpiar campos de formulario
+            document.querySelectorAll('input, select').forEach(field => {
+                if (field.type === 'checkbox') {
+                    field.checked = false;
+                } else {
+                    field.value = '';
+                }
+            });
+            
+            // Reiniciar la barra de progreso
+            updateProgress();
+        }
+        
+        // Inicializar la barra de progreso
+        updateProgress();
+    </script>
+</body>
+</html>
